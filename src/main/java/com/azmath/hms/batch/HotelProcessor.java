@@ -1,4 +1,4 @@
-package com.azmath.hms.processor;
+package com.azmath.hms.batch;
 
 import com.azmath.hms.api.v1.model.vo.HotelVO;
 import com.azmath.hms.models.Hotel;

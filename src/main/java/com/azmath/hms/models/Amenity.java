@@ -2,6 +2,8 @@ package com.azmath.hms.models;
 
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "amenities_master")
@@ -16,6 +18,10 @@ public class Amenity {
 
     @Column(name = "description")
     private String description;
+
+
+//    @OneToMany(mappedBy = "amenity")
+//    private Set<RoomAmenity> roomAmenities = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -40,4 +46,12 @@ public class Amenity {
     public void setDescription(String description) {
         this.description = description;
     }
+
+//    public Set<RoomAmenity> getRoomAmenities() {
+//        return roomAmenities;
+//    }
+//
+//    public void setRoomAmenities(Set<RoomAmenity> roomAmenities) {
+//        this.roomAmenities = roomAmenities;
+//    }
 }

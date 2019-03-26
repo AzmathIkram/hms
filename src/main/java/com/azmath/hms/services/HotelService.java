@@ -39,4 +39,8 @@ public class HotelService {
         return IteratorUtils.toList(hotelRepository.findAll().iterator());
     }
 
+    public void  insetBatch() {
+
+    }
+
 }

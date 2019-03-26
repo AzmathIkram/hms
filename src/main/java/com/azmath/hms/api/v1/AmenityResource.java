@@ -30,7 +30,7 @@ public class AmenityResource {
     @PostMapping
     public ResponseEntity save(@RequestBody AmenityVO amenityVO) {
         Amenity amenity = build(new Amenity(), amenityVO);
-        amenityService.save(amenity);
+        amenity = amenityService.save(amenity);
         return ResponseEntity.ok(amenity);
     }
 
@@ -38,7 +38,7 @@ public class AmenityResource {
     public ResponseEntity update(@PathVariable(name = "id") String id, @RequestBody AmenityVO amenityVO) {
         Amenity amenity = amenityService.findById(Integer.parseInt(id));
         build(amenity, amenityVO);
-        amenityService.save(amenity);
+        amenity = amenityService.save(amenity);
         return ResponseEntity.ok(amenity);
     }
 

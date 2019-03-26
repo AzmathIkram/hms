@@ -50,4 +50,14 @@ public class Hotel {
     public void setCityCode(String cityCode) {
         this.cityCode = cityCode;
     }
+
+    public Hotel() {
+    }
+
+    public Hotel(Integer id, String name, String description, String cityCode) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.cityCode = cityCode;
+    }
 }

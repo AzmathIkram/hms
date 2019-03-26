@@ -1,7 +1,7 @@
 package com.azmath.hms.services;
 
-import com.azmath.hms.models.Hotel;
-import com.azmath.hms.repositories.HotelRepository;
+import com.azmath.hms.models.Room;
+import com.azmath.hms.repositories.RoomRepository;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,27 +16,27 @@ import java.util.Optional;
 public class RoomService {
 
     @Autowired
-    private HotelRepository hotelRepository;
+    private RoomRepository roomRepository;
 
-    public Page<Hotel> search(Pageable page) {
-        return hotelRepository.findAll(page);
+    public Page<Room> search(Pageable page) {
+        return roomRepository.findAll(page);
     }
 
-    public Hotel findById(Integer id) {
-        Optional<Hotel> optionalHotel = hotelRepository.findById(id);
-        return optionalHotel.isPresent() ? optionalHotel.get() : null;
+    public Room findById(Integer id) {
+        Optional<Room> optionalRoom = roomRepository.findById(id);
+        return optionalRoom.isPresent() ? optionalRoom.get() : null;
     }
 
-    public Hotel save(Hotel hotel) {
-        return hotelRepository.save(hotel);
+    public Room save(Room room) {
+        return roomRepository.save(room);
     }
 
     public void delete(Integer id) {
-        hotelRepository.delete(findById(id));
+        roomRepository.delete(findById(id));
     }
 
-    public List<Hotel> findAll(){
-        return IteratorUtils.toList(hotelRepository.findAll().iterator());
+    public List<Room> findAll(){
+        return IteratorUtils.toList(roomRepository.findAll().iterator());
     }
 
 }
