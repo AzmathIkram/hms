@@ -27,8 +27,16 @@ public class HotelService {
         return optionalHotel.isPresent() ? optionalHotel.get() : null;
     }
 
+    public Hotel findByName(String name) {
+        return hotelRepository.findByName(name);
+    }
+
     public Hotel save(Hotel hotel) {
         return hotelRepository.save(hotel);
+    }
+
+    public void saveAll(List<Hotel> hotelList) {
+        hotelRepository.saveAll(hotelList);
     }
 
     public void delete(Integer id) {
