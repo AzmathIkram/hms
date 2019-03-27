@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HotelRepository extends PagingAndSortingRepository<Hotel, Integer> {
+    Hotel findByName(String name);
 }
