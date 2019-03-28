@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 
@@ -33,6 +35,9 @@ public class HotelBatchJob extends JobExecutionListenerSupport {
     @Value("${input.file}")
     private Resource resource;
 
+    @Value("${max-threads}")
+    private int maxThreads;
+
     @Autowired
     private HotelBatchProcessor batchProcessor;
 
@@ -42,7 +47,7 @@ public class HotelBatchJob extends JobExecutionListenerSupport {
     @Bean(name = "hotelBatchUploadJob")
     public Job hotelBatchJob() {
 
-        Step step = stepBuilderFactory.get("step-1").<HotelVO, Hotel>chunk(1)
+        Step step = stepBuilderFactory.get("step-1").<HotelVO, Hotel>chunk(2)
                 .reader(new HotelBatchReader(resource))
                 .processor(batchProcessor)
                 .writer(batchWriter)
@@ -56,6 +61,15 @@ public class HotelBatchJob extends JobExecutionListenerSupport {
 
         return job;
     }
+
+
+    @Bean
+    public TaskExecutor taskExecutor() {
+        SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
+        taskExecutor.setConcurrencyLimit(maxThreads);
+        return taskExecutor;
+    }
+
 
     @Override
     public void afterJob(JobExecution jobExecution) {
