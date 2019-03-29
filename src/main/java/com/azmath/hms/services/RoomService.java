@@ -1,5 +1,6 @@
 package com.azmath.hms.services;
 
+import com.azmath.hms.common.exceptions.ResourceNotFoundException;
 import com.azmath.hms.models.Room;
 import com.azmath.hms.repositories.RoomRepository;
 import org.apache.commons.collections.IteratorUtils;
@@ -24,7 +25,11 @@ public class RoomService {
 
     public Room findById(Integer id) {
         Optional<Room> optionalRoom = roomRepository.findById(id);
-        return optionalRoom.isPresent() ? optionalRoom.get() : null;
+        if(optionalRoom.isPresent()){
+            throw new ResourceNotFoundException("room.id.not.found", String.valueOf(id));
+        }
+
+        return optionalRoom.get();
     }
 
     public Room save(Room room) {

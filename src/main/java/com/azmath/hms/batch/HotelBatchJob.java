@@ -62,7 +62,6 @@ public class HotelBatchJob extends JobExecutionListenerSupport {
         return job;
     }
 
-
     @Bean
     public TaskExecutor taskExecutor() {
         SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();

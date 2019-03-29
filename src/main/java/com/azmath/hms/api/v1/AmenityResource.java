@@ -1,6 +1,7 @@
 package com.azmath.hms.api.v1;
 
 import com.azmath.hms.api.v1.model.vo.AmenityVO;
+import com.azmath.hms.common.exceptions.InvalidRequestParameterException;
 import com.azmath.hms.models.Amenity;
 import com.azmath.hms.services.AmenityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
+import javax.validation.Valid;
 
 
 @RestController
@@ -28,15 +29,20 @@ public class AmenityResource {
     }
 
     @PostMapping
-    public ResponseEntity save(@RequestBody AmenityVO amenityVO) {
+    public ResponseEntity save(@Valid @RequestBody AmenityVO amenityVO) {
         Amenity amenity = build(new Amenity(), amenityVO);
         amenity = amenityService.save(amenity);
         return ResponseEntity.ok(amenity);
     }
 
-    @PutMapping("/{id")
-    public ResponseEntity update(@PathVariable(name = "id") String id, @RequestBody AmenityVO amenityVO) {
-        Amenity amenity = amenityService.findById(Integer.parseInt(id));
+    @PutMapping("/{id}")
+    public ResponseEntity<Amenity> update(@PathVariable(name = "id") int id, @Valid @RequestBody AmenityVO amenityVO) {
+
+        if(id != amenityVO.getId()) {
+            throw new InvalidRequestParameterException("amenity.update.id.does.not.match", String.valueOf(id));
+        }
+
+        Amenity amenity = amenityService.findById(id);
         build(amenity, amenityVO);
         amenity = amenityService.save(amenity);
         return ResponseEntity.ok(amenity);
