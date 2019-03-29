@@ -13,7 +13,7 @@ public class RoomVO {
     @Size(min = 1, max = 500, message = "Room name should not be greater than 500")
     private String description;
 
-    @Min(value = 0, message = "Hotel id for the room should be valid.")
+    @Min(value = 1, message = "Hotel id for the room should be a positive value.")
     private int hotelId;
 
 

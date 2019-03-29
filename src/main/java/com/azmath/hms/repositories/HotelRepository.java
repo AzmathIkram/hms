@@ -10,7 +10,6 @@ import java.util.Optional;
 public interface HotelRepository extends PagingAndSortingRepository<Hotel, Integer> {
 
     Hotel findByName(String name);
-
     Optional<Hotel> findOneByName(String name);
     Optional<Hotel> findOneByNameAndIdNot(String name, Integer id);
 }

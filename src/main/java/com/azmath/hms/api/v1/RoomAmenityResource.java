@@ -3,6 +3,7 @@ package com.azmath.hms.api.v1;
 
 import com.azmath.hms.api.v1.model.vo.HotelAmenityVO;
 import com.azmath.hms.api.v1.model.vo.RoomAmenityVO;
+import com.azmath.hms.common.exceptions.InvalidRequestParameterException;
 import com.azmath.hms.models.Amenity;
 import com.azmath.hms.models.HotelAmenity;
 import com.azmath.hms.models.Room;
@@ -43,17 +44,21 @@ public class RoomAmenityResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable(name = "id") String id,@RequestBody RoomAmenityVO roomAmenityVO) {
-        RoomAmenity roomAmenity = roomAmenityService.findById(Integer.parseInt(id));
+    public ResponseEntity update(@PathVariable(name = "id") int id,@RequestBody RoomAmenityVO roomAmenityVO) {
+
+        if(id != roomAmenityVO.getId()){
+            throw new InvalidRequestParameterException("roomAmenity.update.id.does.not.match", String.valueOf(id));
+        }
+        RoomAmenity roomAmenity = roomAmenityService.findById(id);
         roomAmenity = build(roomAmenity, roomAmenityVO);
         roomAmenity = roomAmenityService.save(roomAmenity);
         return ResponseEntity.ok(roomAmenity);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable(name = "id") String id) {
+    public ResponseEntity delete(@PathVariable(name = "id") int id) {
         try{
-            roomAmenityService.delete(Integer.parseInt(id));
+            roomAmenityService.delete(id);
             return  ResponseEntity.noContent().build();
 
         } catch(Exception e) {

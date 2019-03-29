@@ -1,5 +1,6 @@
 package com.azmath.hms.services;
 
+import com.azmath.hms.common.exceptions.ResourceAlreadyExistsException;
 import com.azmath.hms.common.exceptions.ResourceNotFoundException;
 import com.azmath.hms.models.Room;
 import com.azmath.hms.repositories.RoomRepository;
@@ -26,15 +27,26 @@ public class RoomService {
     public Room findById(Integer id) {
         Optional<Room> optionalRoom = roomRepository.findById(id);
         if(optionalRoom.isPresent()){
-            throw new ResourceNotFoundException("room.id.not.found", String.valueOf(id));
+            throw new ResourceNotFoundException("room.not.found", String.valueOf(id));
         }
-
         return optionalRoom.get();
     }
 
     public Room save(Room room) {
+        if(roomRepository.findByDescriptionAndHotel(room.getDescription(), room.getHotel()).isPresent()){
+            throw  new ResourceAlreadyExistsException("room.create.name.already.exist", room.getDescription());
+        }
         return roomRepository.save(room);
     }
+
+    public Room update(Room room) {
+
+        if(roomRepository.findByDescriptionAndIdNotAndHotel(room.getDescription(), room.getId(), room.getHotel()).isPresent()) {
+            throw  new ResourceAlreadyExistsException("room.update.name.already.exist", room.getDescription());
+        }
+        return roomRepository.save(room);
+    }
+
 
     public void delete(Integer id) {
         roomRepository.delete(findById(id));

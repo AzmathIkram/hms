@@ -1,5 +1,7 @@
 package com.azmath.hms.services;
 
+import com.azmath.hms.common.exceptions.ResourceAlreadyExistsException;
+import com.azmath.hms.common.exceptions.ResourceNotFoundException;
 import com.azmath.hms.models.RoomAmenity;
 import com.azmath.hms.repositories.RoomAmenityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +24,28 @@ public class RoomAmenityService {
     }
 
     public RoomAmenity save(RoomAmenity roomAmenity) {
+
+        if(roomAmenityRepository.findByRoomAndAmenity(roomAmenity.getRoom(), roomAmenity.getAmenity()).isPresent()){
+            throw  new ResourceAlreadyExistsException("roomAmenity.create.already.exist.for.given.room.and.amenity", String.valueOf(roomAmenity.getId()));
+        }
         return roomAmenityRepository.save(roomAmenity);
 
     }
 
+    public RoomAmenity update(RoomAmenity roomAmenity) {
+
+        if(roomAmenityRepository.findByRoomAndAmenityAndIdNot(roomAmenity.getRoom(), roomAmenity.getAmenity(), roomAmenity.getId()).isPresent()){
+            throw  new ResourceAlreadyExistsException("roomAmenity.update.already.exist.for.given.room.and.amenity.on.a.different.id", String.valueOf(roomAmenity.getId()));
+        }
+        return roomAmenityRepository.save(roomAmenity);
+    }
+
     public RoomAmenity findById(Integer id) {
         Optional<RoomAmenity> optionalRoomAmenity = roomAmenityRepository.findById(id);
-        return optionalRoomAmenity.isPresent() ? optionalRoomAmenity.get() : null;
+        if(!optionalRoomAmenity.isPresent()){
+            throw new ResourceNotFoundException("roomAmenity.not.found", String.valueOf(id));
+        }
+        return optionalRoomAmenity.get();
     }
 
     public void delete(Integer id) {
