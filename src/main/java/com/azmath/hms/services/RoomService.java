@@ -26,7 +26,7 @@ public class RoomService {
 
     public Room findById(Integer id) {
         Optional<Room> optionalRoom = roomRepository.findById(id);
-        if(optionalRoom.isPresent()){
+        if(!optionalRoom.isPresent()){
             throw new ResourceNotFoundException("room.not.found", String.valueOf(id));
         }
         return optionalRoom.get();

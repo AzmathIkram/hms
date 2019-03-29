@@ -28,6 +28,7 @@ public class RoomAmenityService {
         if(roomAmenityRepository.findByRoomAndAmenity(roomAmenity.getRoom(), roomAmenity.getAmenity()).isPresent()){
             throw  new ResourceAlreadyExistsException("roomAmenity.create.already.exist.for.given.room.and.amenity", String.valueOf(roomAmenity.getId()));
         }
+
         return roomAmenityRepository.save(roomAmenity);
 
     }
