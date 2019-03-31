@@ -1,6 +1,7 @@
 package com.azmath.hms.api.v1;
 
 import com.azmath.hms.api.v1.model.vo.HotelAmenityVO;
+import com.azmath.hms.common.exceptions.InvalidRequestParameterException;
 import com.azmath.hms.models.*;
 import com.azmath.hms.services.AmenityService;
 import com.azmath.hms.services.HotelAmenityService;
@@ -39,10 +40,15 @@ public class HotelAmenityResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable(name = "id") String id,@RequestBody HotelAmenityVO hotelAmenityVO) {
-        HotelAmenity hotelAmenity = hotelAmenityService.findById(Integer.parseInt(id));
+    public ResponseEntity update(@PathVariable(name = "id") int id,@RequestBody HotelAmenityVO hotelAmenityVO) {
+
+        if(id != hotelAmenityVO.getId()){
+            throw new InvalidRequestParameterException("hotelAmenity.update.id.does.not.match", String.valueOf(id));
+        }
+
+        HotelAmenity hotelAmenity = hotelAmenityService.findById(id);
         hotelAmenity = build(hotelAmenity, hotelAmenityVO);
-        hotelAmenity = hotelAmenityService.save(hotelAmenity);
+        hotelAmenity = hotelAmenityService.update(hotelAmenity);
         return ResponseEntity.ok(hotelAmenity);
     }
 
@@ -55,6 +61,12 @@ public class HotelAmenityResource {
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<HotelAmenity> findById(@PathVariable(name = "id") int id) {
+        HotelAmenity hotelAmenity = hotelAmenityService.findById(id);
+        return ResponseEntity.ok(hotelAmenity);
     }
 
 

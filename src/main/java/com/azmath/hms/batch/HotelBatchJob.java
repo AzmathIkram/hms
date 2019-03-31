@@ -5,6 +5,8 @@ import com.azmath.hms.batch.processor.HotelBatchProcessor;
 import com.azmath.hms.batch.reader.HotelBatchReader;
 import com.azmath.hms.batch.writer.HotelBatchWriter;
 import com.azmath.hms.models.Hotel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -17,13 +19,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
-
 
 
 
 @Component
 public class HotelBatchJob extends JobExecutionListenerSupport {
+
+    private static final Logger log = LoggerFactory.getLogger(HotelBatchJob.class);
+
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
 
@@ -32,6 +38,9 @@ public class HotelBatchJob extends JobExecutionListenerSupport {
 
     @Value("${input.file}")
     private Resource resource;
+
+    @Value("${max-threads}")
+    private int maxThreads;
 
     @Autowired
     private HotelBatchProcessor batchProcessor;
@@ -42,7 +51,7 @@ public class HotelBatchJob extends JobExecutionListenerSupport {
     @Bean(name = "hotelBatchUploadJob")
     public Job hotelBatchJob() {
 
-        Step step = stepBuilderFactory.get("step-1").<HotelVO, Hotel>chunk(1)
+        Step step = stepBuilderFactory.get("step-1").<HotelVO, Hotel>chunk(5)
                 .reader(new HotelBatchReader(resource))
                 .processor(batchProcessor)
                 .writer(batchWriter)
@@ -57,9 +66,18 @@ public class HotelBatchJob extends JobExecutionListenerSupport {
         return job;
     }
 
+    @Bean
+    public TaskExecutor taskExecutor() {
+        SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
+        taskExecutor.setConcurrencyLimit(maxThreads);
+        return taskExecutor;
+    }
+
+
     @Override
     public void afterJob(JobExecution jobExecution) {
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
+            log.info("Job completed successfully.");
             System.out.println("BATCH JOB COMPLETED SUCCESSFULLY");
         }
     }

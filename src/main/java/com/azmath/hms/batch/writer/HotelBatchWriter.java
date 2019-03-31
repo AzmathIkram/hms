@@ -20,5 +20,6 @@ public class HotelBatchWriter implements ItemWriter<Hotel> {
     @Transactional
     public void write(List<? extends Hotel> items) throws Exception {
         hotelService.saveAll((List<Hotel>) items);
+        System.out.println("Saved items");
     }
 }

@@ -1,18 +1,26 @@
 package com.azmath.hms.api.v1.model.vo;
 
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+
 public class RoomAmenityVO {
 
+    @PositiveOrZero(message = "RoomAmenity id must be a valid one.")
     private int id;
 
+    @Positive(message = "Room id must be a valid one.")
     private int roomId;
 
+    @Positive(message = "Amenity id must be a valid one.")
     private int amenityId;
 
     private String amenity;
 
     private String hotelName;
 
+    @DecimalMin(value = "0.0", message = "RoomAmenity amount must be positive or zero")
     private double amount;
 
     private boolean chargable;

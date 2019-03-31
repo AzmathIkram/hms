@@ -1,6 +1,7 @@
 package com.azmath.hms.api.v1;
 
 import com.azmath.hms.api.v1.model.vo.RoomVO;
+import com.azmath.hms.common.exceptions.ResourceConflictException;
 import com.azmath.hms.models.Hotel;
 import com.azmath.hms.models.Room;
 import com.azmath.hms.services.HotelService;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 
 @RestController
@@ -30,15 +33,20 @@ public class RoomResource {
     }
 
     @PostMapping
-    public ResponseEntity save(@RequestBody RoomVO roomVO) {
+    public ResponseEntity<Room> save(@Valid @RequestBody RoomVO roomVO) {
         Room room = build(new Room(), roomVO);
         room = roomService.save(room);
         return ResponseEntity.ok(room);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable(name = "id") String id, @RequestBody RoomVO roomVO) {
-        Room room = roomService.findById(Integer.parseInt(id));
+    public ResponseEntity<Room> update(@PathVariable(name = "id") int id, @Valid @RequestBody RoomVO roomVO) {
+
+        if(id != roomVO.getId()) {
+            throw new ResourceConflictException("room.update.id.does.not.match", String.valueOf(id));
+        }
+
+        Room room = roomService.findById(id);
         room = build(room, roomVO);
         room = roomService.save(room);
         return ResponseEntity.ok(room);
@@ -59,6 +67,8 @@ public class RoomResource {
         RoomVO target = new RoomVO();
         target.setId(source.getId());
         target.setDescription(source.getDescription());
+        Hotel hotel = source.getHotel();
+        target.setHotelId(hotel.getId());
         return target;
     }
 

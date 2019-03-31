@@ -1,6 +1,11 @@
 package com.azmath.hms.models;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "hotels")
@@ -18,6 +23,9 @@ public class Hotel {
 
     @Column(name = "city_code")
     private String cityCode;
+
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+    private Set<HotelAmenity> hotelAmenitySet = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -59,5 +67,38 @@ public class Hotel {
         this.name = name;
         this.description = description;
         this.cityCode = cityCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Hotel hotel = (Hotel) o;
+
+        return new EqualsBuilder()
+                .append(id, hotel.id)
+                .append(name, hotel.name)
+                .append(description, hotel.description)
+                .append(cityCode, hotel.cityCode)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(name)
+                .append(description)
+                .append(cityCode)
+                .toHashCode();
+    }
+    public Set<HotelAmenity> getHotelAmenitySet() {
+        return hotelAmenitySet;
+    }
+
+    public void setHotelAmenitySet(Set<HotelAmenity> hotelAmenitySet) {
+        this.hotelAmenitySet = hotelAmenitySet;
     }
 }

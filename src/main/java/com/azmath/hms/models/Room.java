@@ -15,11 +15,11 @@ public class Room {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="hotel_id", nullable=false)
     private Hotel hotel;
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private Set<RoomAmenity> roomAmenities = new HashSet<>();
 
     public Integer getId() {
