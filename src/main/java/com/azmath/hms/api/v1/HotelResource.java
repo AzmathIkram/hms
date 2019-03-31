@@ -1,7 +1,6 @@
 package com.azmath.hms.api.v1;
 
 import com.azmath.hms.api.v1.model.vo.HotelVO;
-import com.azmath.hms.common.exceptions.ResourceAlreadyExistsException;
 import com.azmath.hms.common.exceptions.ResourceConflictException;
 import com.azmath.hms.models.Hotel;
 import com.azmath.hms.services.HotelService;
@@ -13,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.NumberUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,24 +26,6 @@ public class HotelResource {
     @Autowired
     private HotelService hotelService;
 
-    @Autowired
-    private JobLauncher jobLauncher;
-
-
-    @Autowired
-    @Qualifier("hotelBatchUploadJob")
-    Job hotelBatchUploadJob;
-
-    @GetMapping("/test")
-    public ResponseEntity<String> test() throws Exception{
-
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addString("source", Long.toString(Instant.now().toEpochMilli()))
-                .toJobParameters();
-        jobLauncher.run(hotelBatchUploadJob, jobParameters);
-
-        return  ResponseEntity.ok("Batch job has been invoked");
-    }
 
     @GetMapping
     public Page<HotelVO> search(Pageable page) {

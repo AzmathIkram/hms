@@ -35,12 +35,7 @@ public class HotelService {
     }
 
     public Hotel findByName(String name) {
-
-        Hotel hotel = hotelRepository.findByName(name);
-        if(ObjectUtils.isEmpty(hotel)) {
-            throw  new ResourceNotFoundException("hotel.not.found", String.valueOf(name));
-        }
-        return hotel;
+        return hotelRepository.findByName(name);
     }
 
     public Hotel save(Hotel hotel) {

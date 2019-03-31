@@ -5,6 +5,8 @@ import com.azmath.hms.batch.processor.HotelBatchProcessor;
 import com.azmath.hms.batch.reader.HotelBatchReader;
 import com.azmath.hms.batch.writer.HotelBatchWriter;
 import com.azmath.hms.models.Hotel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -23,9 +25,11 @@ import org.springframework.stereotype.Component;
 
 
 
-
 @Component
 public class HotelBatchJob extends JobExecutionListenerSupport {
+
+    private static final Logger log = LoggerFactory.getLogger(HotelBatchJob.class);
+
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
 
@@ -47,7 +51,7 @@ public class HotelBatchJob extends JobExecutionListenerSupport {
     @Bean(name = "hotelBatchUploadJob")
     public Job hotelBatchJob() {
 
-        Step step = stepBuilderFactory.get("step-1").<HotelVO, Hotel>chunk(2)
+        Step step = stepBuilderFactory.get("step-1").<HotelVO, Hotel>chunk(5)
                 .reader(new HotelBatchReader(resource))
                 .processor(batchProcessor)
                 .writer(batchWriter)
@@ -73,6 +77,7 @@ public class HotelBatchJob extends JobExecutionListenerSupport {
     @Override
     public void afterJob(JobExecution jobExecution) {
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
+            log.info("Job completed successfully.");
             System.out.println("BATCH JOB COMPLETED SUCCESSFULLY");
         }
     }
